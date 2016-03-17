@@ -1,5 +1,6 @@
 package org.fasttrackit.onlinelibrary.login;
 
+import com.sdl.selenium.web.utils.Utils;
 import org.apache.xpath.SourceTree;
 import org.fasttrackit.util.TestBase;
 import org.openqa.selenium.By;
@@ -57,6 +58,41 @@ public class FirstLoginTest extends TestBase {
         assertThatErrorIs("Please Enter your Email!");
     }
 
+    @Test
+    public void whenEnternoCredentials () {
+        openLoginPage();
+        doLogin("eu@fast.com","eu.pass");
+
+        WebElement preferencesButton = driver.findElement(By.xpath("//nav//button"));
+        preferencesButton.click();
+
+        Utils.sleep(300);
+
+        //css selector: $$("#preferences-win input[name=password]")
+        WebElement currentPasswordField = driver.findElement(By.xpath("//div[@id='preferences-win']//input[@name='password']"));
+        currentPasswordField.sendKeys("eu.pass");
+
+        WebElement newPasswordField = driver.findElement(By.xpath("//input[@name='newPassword']"));
+        newPasswordField.sendKeys("eu.pass2");
+
+        WebElement repeatPasswordField = driver.findElement(By.xpath("//input[@name='newPasswordRepeat']"));
+        repeatPasswordField.sendKeys("eu.pass2");
+
+        WebElement saveBtn =driver.findElement(By.cssSelector("#preferences-win button.btn-warning"));
+        saveBtn.click();
+
+        WebElement statusElement =driver.findElement(By.cssSelector("#preferences-win .status-msg"));
+        System.out.println(statusElement.getText());
+        assertThat(statusElement.getText(), is("Your password has been successfully changed."));
+
+    }
+
+    @Test
+    public void succeschangepassword(){
+        openLoginPage();
+        doLogin("", "some.pass");
+
+    }
     private void assertThatErrorIs(String message) {
         WebElement errorMsg = driver.findElement((By.className("error-msg")));
         System.out.println(errorMsg.getText());
