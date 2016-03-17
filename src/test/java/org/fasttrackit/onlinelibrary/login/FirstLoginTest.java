@@ -1,11 +1,12 @@
 package org.fasttrackit.onlinelibrary.login;
 
 import com.sdl.selenium.web.utils.Utils;
-import org.apache.xpath.SourceTree;
+import org.fasttrackit.example.LoginPage;
 import org.fasttrackit.util.TestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,10 +15,16 @@ import static org.hamcrest.core.Is.is;
 
 public class FirstLoginTest extends TestBase {
 
+    private LoginPage loginPage;
+
+    public FirstLoginTest() {
+        loginPage = PageFactory.initElements(driver, LoginPage.class);
+    }
+
     @Test
     public void whenEnterValidCredentialsImSuccessfullyLogin() {
         openLoginPage();
-        doLogin("eu@fast.com","eu.pass");
+        loginPage.doLogin("eu@fast.com", "eu.pass");
 
         try {
             WebElement logoutBtn = driver.findElement(By.linkText("Logout"));
@@ -30,7 +37,7 @@ public class FirstLoginTest extends TestBase {
     @Test
     public void whenEnterInvalidCredentialsImSuccessfullyLogin() {
         openLoginPage();
-        doLogin("eu@fast.com","wrongpasword");
+        loginPage.doLogin("eu@fast.com","wrongpasword");
 
         try {
             WebElement logoutBtn = driver.findElement(By.linkText("Logout"));
@@ -43,7 +50,7 @@ public class FirstLoginTest extends TestBase {
     @Test
     public void whenEnterEnterEmailIgetErrorMessage() {
         openLoginPage();
-        doLogin("eu@fast.com", "");
+        loginPage.doLogin("eu@fast.com", "");
 
         WebElement errorMsg = driver.findElement((By.className("error-msg")));
         System.out.println(errorMsg.getText());
@@ -53,21 +60,19 @@ public class FirstLoginTest extends TestBase {
     @Test
     public void whenEnterEnterjustPassword() {
         openLoginPage();
-        doLogin("", "some.pass");
-
-        assertThatErrorIs("Please Enter your Email!");
+        loginPage.doLogin("", "some.pass");
+        loginPage.assertThatErrorIs("Please Enter your Email!");
     }
 
     @Test
     public void whenEnternoCredentials () {
         openLoginPage();
-        doLogin("eu@fast.com","eu.pass");
+        loginPage.doLogin("eu@fast.com","eu.pass");
 
         WebElement preferencesButton = driver.findElement(By.xpath("//nav//button"));
         preferencesButton.click();
 
         Utils.sleep(300);
-
         //css selector: $$("#preferences-win input[name=password]")
         WebElement currentPasswordField = driver.findElement(By.xpath("//div[@id='preferences-win']//input[@name='password']"));
         currentPasswordField.sendKeys("eu.pass");
@@ -86,28 +91,10 @@ public class FirstLoginTest extends TestBase {
         assertThat(statusElement.getText(), is("Your password has been successfully changed."));
 
     }
-
     @Test
     public void succeschangepassword(){
         openLoginPage();
-        doLogin("", "some.pass");
-
-    }
-    private void assertThatErrorIs(String message) {
-        WebElement errorMsg = driver.findElement((By.className("error-msg")));
-        System.out.println(errorMsg.getText());
-        assertThat(errorMsg.getText(), is(message));
-    }
-
-    private void doLogin(String username, String parola) {
-        WebElement emailField = driver.findElement(By.id("email"));
-        emailField.sendKeys(username);
-
-        WebElement passField = driver.findElement(By.id("password"));
-        passField.sendKeys(parola);
-
-        WebElement loginBtn = driver.findElement(By.className("btn"));
-        loginBtn.click();
+        loginPage.doLogin("", "some.pass");
 
     }
 
