@@ -15,13 +15,13 @@ import org.testng.annotations.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class FirstLoginTest extends TestBase {
+public class ChangePasswordTest extends TestBase {
 
     private LoginPage loginPage;
     private ChangePasswordPage changePasswordPage;
     private NavigationAndLogoutBar navigationAndLogoutBar;
 
-    public FirstLoginTest() {
+    public ChangePasswordTest() {
         loginPage = PageFactory.initElements(driver, LoginPage.class);
         changePasswordPage = PageFactory.initElements(driver, ChangePasswordPage.class);
         navigationAndLogoutBar = PageFactory.initElements(driver, NavigationAndLogoutBar.class);
