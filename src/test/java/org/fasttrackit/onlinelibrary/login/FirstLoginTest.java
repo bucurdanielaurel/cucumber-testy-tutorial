@@ -1,9 +1,6 @@
 package org.fasttrackit.onlinelibrary.login;
 
-import com.sdl.selenium.web.utils.Utils;
-import org.fasttrackit.example.ChangePasswordPage;
 import org.fasttrackit.example.LoginPage;
-import org.fasttrackit.example.NavigationAndLogoutBar;
 import org.fasttrackit.util.TestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -12,19 +9,12 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 public class FirstLoginTest extends TestBase {
 
     private LoginPage loginPage;
-    private ChangePasswordPage changePasswordPage;
-    private NavigationAndLogoutBar navigationAndLogoutBar;
 
     public FirstLoginTest() {
         loginPage = PageFactory.initElements(driver, LoginPage.class);
-        changePasswordPage = PageFactory.initElements(driver, ChangePasswordPage.class);
-        navigationAndLogoutBar = PageFactory.initElements(driver, NavigationAndLogoutBar.class);
     }
 
     @Test
@@ -41,67 +31,36 @@ public class FirstLoginTest extends TestBase {
     }
 
     @Test
-    public void whenEnterInvalidCredentialsImSuccessfullyLogin() {
+    public void whenEnterInvalidPasswordIGetErrorMessage() {
         openLoginPage();
-        loginPage.doLogin("eu@fast.com","wrongpasword");
-
-        try {
-            WebElement logoutBtn = driver.findElement(By.linkText("Logout"));
-            logoutBtn.click();
-        } catch (NoSuchElementException exception) {
-            Assert.fail("Could not login. Logout button not found.");
-        }
+        loginPage.doLogin("eu@fast.com", "wrong.pass");
+        loginPage.assertThatErrorIs("Invalid user or password!");
     }
 
     @Test
-    public void whenEnterEnterEmailIgetErrorMessage() {
+    public void whenEnterOnlyEmailIGetErrorMessage() {
         openLoginPage();
         loginPage.doLogin("eu@fast.com", "");
-
-        WebElement errorMsg = driver.findElement((By.className("error-msg")));
-        System.out.println(errorMsg.getText());
-        assertThat(errorMsg.getText(), is("Please enter your password!"));
-        }
-
-    @Test
-    public void whenEnterEnterjustPassword() {
-        openLoginPage();
-        loginPage.doLogin("", "some.pass");
-        loginPage.assertThatErrorIs("Please Enter your Email!");
-
+        loginPage.assertThatErrorIs("Please enter your password!");
     }
 
     @Test
-    public void whenEnternoCredentials () {
-        openLoginPage();
-        loginPage.doLogin("eu@fast.com","eu.pass");
-
-//        WebElement preferencesButton = driver.findElement(By.xpath("//nav//button"));
-//        preferencesButton.click();
-
-
-        Utils.sleep(300);
-
-        navigationAndLogoutBar.clickChangePassword();
-
-        changePasswordPage.changePassword("eu.pass", "eu.pass2");
-
-        String statusElementText = changePasswordPage.getStatusMessage();
-
-        System.out.println(statusElementText);
-        assertThat(statusElementText , is("Your password has been successfully changed."));
-
-    }
-    @Test
-    public void succeschangepassword(){
+    public void whenEnterOnlyPassowrdIGetErrorMessage() {
         openLoginPage();
         loginPage.doLogin("", "some.pass");
+        loginPage.assertThatErrorIs("Please enter your email!");
+    }
 
+    @Test
+    public void whenNoCretentialsIGetErrorMessage() {
+        openLoginPage();
+        loginPage.doLogin("", "");
+        loginPage.assertThatErrorIs("Please enter your email!");
     }
 
     private void openLoginPage() {
         System.out.println("open login page");
         driver.get("https://rawgit.com/sdl/Testy/master/src/test/functional/app-demo/login.html");
+//        driver.get("file:///C:/Producs/Testy/src/test/functional/app-demo/login.html");
     }
-
 }
