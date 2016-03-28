@@ -1,14 +1,10 @@
 package org.fasttrackit.onlinelibrary.login;
 
-import org.fasttrackit.example.ChangePasswordPage;
+import org.fasttrackit.example.ChangePasswordView;
 import org.fasttrackit.example.LoginPage;
-import org.fasttrackit.example.NavigationAndLogoutBar;
+import org.fasttrackit.example.NavigationBarPage;
 import org.fasttrackit.util.TestBase;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,13 +13,12 @@ import static org.hamcrest.Matchers.is;
 public class ChangePasswordTest extends TestBase {
 
     private LoginPage loginPage;
-    private ChangePasswordPage changePasswordPage;
-    private NavigationAndLogoutBar navigationBarPage;
+    private ChangePasswordView changePasswordPage = new ChangePasswordView();
+    private NavigationBarPage navigationBarPage;
 
     public ChangePasswordTest() {
         loginPage = PageFactory.initElements(driver, LoginPage.class);
-        changePasswordPage = PageFactory.initElements(driver, ChangePasswordPage.class);
-        navigationBarPage = PageFactory.initElements(driver, NavigationAndLogoutBar.class);
+        navigationBarPage = PageFactory.initElements(driver, NavigationBarPage.class);
     }
 
     @Test
@@ -33,12 +28,13 @@ public class ChangePasswordTest extends TestBase {
 
         navigationBarPage.openPreferencesWindow();
 
-        changePasswordPage.changePassword("eu.pass", "eu.pass2");
+        changePasswordPage.changePassword("eu.pass", "eu.pass2", "eu.pass2");
 
         String statusElementText = changePasswordPage.getStatusMessage();
 
         System.out.println(statusElementText);
         assertThat(statusElementText, is("Your password has been successfully changed."));
+        changePasswordPage.close();
     }
 
     private void openLoginPage() {
