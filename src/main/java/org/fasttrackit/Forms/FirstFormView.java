@@ -1,7 +1,9 @@
 package org.fasttrackit.Forms;
 
 import com.sdl.selenium.bootstrap.form.DatePicker;
+import com.sdl.selenium.web.SearchType;
 import com.sdl.selenium.web.WebLocator;
+import com.sdl.selenium.web.form.CheckBox;
 
 public class FirstFormView  extends WebLocator{
 
@@ -16,9 +18,15 @@ public class FirstFormView  extends WebLocator{
     public DatePicker datePicker = new DatePicker(this);
     public  WebLocator selectCalendar = new WebLocator(this).setClasses("icon-calendar");
 
-    public static void main(String[] args) {
-        FirstFormView formview = new FirstFormView();
+    public WebLocator stopProcessLabel = new WebLocator(this).setTag("label").setText("Stop the process?", SearchType.TRIM);
+    public WebLocator enterLabel = new WebLocator(this).setTag("label").setText("Label with Enter", SearchType.TRIM, SearchType.CHILD_NODE);
+    public CheckBox stopProcessCheckbox = new CheckBox(this).setLabel("Stop the process", SearchType.TRIM).setLabelPosition("//");
+    public CheckBox enterCheckbox = new CheckBox(enterLabel);
 
-        System.out.println(formview.selectCalendar.getSelector());
+
+    public static void main(String[] args) {
+        FirstFormView formView = new FirstFormView();
+
+        System.out.println(formView.stopProcessCheckbox.getSelector());
     }
 }
